@@ -14,7 +14,7 @@ import model
 
 # Parameter
 training_epochs = 200
-batch_size = 8
+batch_size = 12
 
 def main(data, model, category, channel):
     print("Reading images...")
@@ -43,9 +43,9 @@ def main(data, model, category, channel):
 
 if __name__=='__main__':
     args = sys.argv
-    # args[0]: CATEGORY
-    # args[1]: channel
+    CATEGORY = int(args[1])
+    channel = int(args[2])
 
-    data = data.MyLoadData(c.IMG_SIZE, int(args[2]))
-    model = model.MyModel((c.IMG_SIZE, c.IMG_SIZE, int(args[2])), batch_size, training_epochs)
-    main(data, model, int(args[1]), int(args[2]))
+    data = data.MyLoadData(c.IMG_SIZE, channel)
+    model = model.MyModel((c.IMG_SIZE, c.IMG_SIZE, channel), batch_size, training_epochs)
+    main(data, model, CATEGORY, channel)

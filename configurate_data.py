@@ -15,6 +15,8 @@ FILENAMES = ['../DAGM/Class1_def/',
             '../DAGM/Class5_def/',
             '../DAGM/Class6_def/']
 
+weight = [0.9, 1.0, 0.9, 0.9, 0.9, 0.8]
+
 if __name__ == "__main__":
     cntTrain = 0
     cntTest = 0
@@ -113,7 +115,7 @@ if __name__ == "__main__":
                     distToEllipse = math.sqrt((mjr * math.cos(ang))**2 + (mnr * math.sin(ang))**2)
                     if(dist < distToEllipse):
                         label[j*c.IMG_SIZE + i + 1] = 1.0 # defection
-                        labelAll[(j*c.IMG_SIZE + i)*c.CATEGORY + n + 1] = 1.0 # defection
+                        labelAll[(j*c.IMG_SIZE + i)*c.CATEGORY + n + 1] = weight[n] # defection
                     else:
                         label[j*c.IMG_SIZE + i + 1] = 0.0
                         labelAll[(j*c.IMG_SIZE + i)*c.CATEGORY + n + 1] = 0.0

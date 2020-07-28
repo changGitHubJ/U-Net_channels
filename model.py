@@ -96,5 +96,3 @@ class MyModel:
 
     def save(self, output_filename):
         self.model.save(output_filename)
-    
-

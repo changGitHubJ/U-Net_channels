@@ -7,6 +7,8 @@ from PIL import Image
 
 import common as c
 
+NUM = 30
+
 def readImages(filename, DATA_SIZE, channel):
     images = np.zeros((DATA_SIZE, c.IMG_SIZE, c.IMG_SIZE, channel))
     fileImg = open(filename)
@@ -23,27 +25,27 @@ def readImages(filename, DATA_SIZE, channel):
 
 def main():
     for k in range(c.CATEGORY):
-        train_image = readImages('./data/testImage256_%d.txt'%k, c.TEST_DATA_SIZE, 1)
-        train_label = readImages('./data/testLabel256_%d.txt'%k, c.TEST_DATA_SIZE, 1)
+        train_image = readImages('./data/testImage256_%d.txt'%k, NUM, 1)
+        train_label = readImages('./data/testLabel256_%d.txt'%k, NUM, 1)
 
-        for i in range(c.TRAIN_DATA_SIZE):
+        for i in range(NUM):
             plt.figure(figsize=[10, 4])
             plt.subplot(1, 2, 1)
-            fig = plt.imshow(train_image[i, :, : , 0].reshape([c.IMG_SIZE, c.IMG_SIZE]))
+            fig = plt.imshow(train_image[i, :, : , 0].reshape([c.IMG_SIZE, c.IMG_SIZE]), vmin=0, vmax=255)
             fig.axes.get_xaxis().set_visible(False)
             fig.axes.get_yaxis().set_visible(False)    
             plt.subplot(1, 2, 2)
-            fig = plt.imshow(train_label[i, :, :, 0].reshape([c.IMG_SIZE, c.IMG_SIZE]))
+            fig = plt.imshow(train_label[i, :, :, 0].reshape([c.IMG_SIZE, c.IMG_SIZE]), vmin=0, vmax=1.0)
             fig.axes.get_xaxis().set_visible(False)
             fig.axes.get_yaxis().set_visible(False)
 
             plt.show()
 
 def main_all():
-    train_image = readImages('./data/testImage256_100.txt', c.TEST_DATA_SIZE*c.CATEGORY, c.CATEGORY)
-    train_label = readImages('./data/testLabel256_100.txt', c.TEST_DATA_SIZE*c.CATEGORY, c.CATEGORY)
+    train_image = readImages('./data/testImage256_100.txt', NUM*c.CATEGORY, c.CATEGORY)
+    train_label = readImages('./data/testLabel256_100.txt', NUM*c.CATEGORY, c.CATEGORY)
 
-    for i in range(c.TRAIN_DATA_SIZE*c.CATEGORY):
+    for i in range(NUM*c.CATEGORY):
         plt.figure(figsize=[15, 6])
         for j in range(c.CATEGORY):
             plt.subplot(2, 6, j + 1)
