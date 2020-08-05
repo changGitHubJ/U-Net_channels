@@ -16,7 +16,6 @@ namespace Viewer
         const int IMG_SIZE = 256;
         const int CHANNEL = 6;
         private Bitmap resized;
-        System.Drawing.Graphics g;
         System.Diagnostics.Stopwatch sw;
 
         public Form1()
@@ -25,7 +24,6 @@ namespace Viewer
 
             int ret = WrapInferenceDLL.initializeDll();
             resized = new Bitmap(IMG_SIZE, IMG_SIZE); // width, height
-            g = pictureBox1.CreateGraphics();
 
             sw = new System.Diagnostics.Stopwatch();
             sw.Start();
@@ -125,7 +123,6 @@ namespace Viewer
         {
             WrapInferenceDLL.finalizeDll();
             resized.Dispose();
-            g.Dispose();
         }
 
         private void panel_DragEnter(object sender, DragEventArgs e)
@@ -164,17 +161,17 @@ namespace Viewer
             }
         }
 
-        private void showPicture(string fileName)
+        private void showPicture(string filename)
         {
-            Image image = Image.FromFile(fileName);
-            Graphics graphics = Graphics.FromImage(resized);
-            using (System.Drawing.Imaging.ImageAttributes wrapMode = new System.Drawing.Imaging.ImageAttributes())
-            {
-                wrapMode.SetWrapMode(System.Drawing.Drawing2D.WrapMode.TileFlipXY);
-                graphics.DrawImage(image, new Rectangle(0, 0, IMG_SIZE, IMG_SIZE), 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
-                
-            }            
-            g.DrawImage(resized, new System.Drawing.Point(0, 0));
+            Graphics g = Graphics.FromImage(resized);
+            Bitmap image = new Bitmap(filename);
+            g.InterpolationMode =
+                System.Drawing.Drawing2D.InterpolationMode.Bicubic;
+            g.DrawImage(image, 0, 0, IMG_SIZE, IMG_SIZE);
+            image.Dispose();
+            g.Dispose();
+
+            pictureBox1.Image = resized;
 
             btnInfer1.Enabled = true;
             btnInfer2.Enabled = true;
@@ -187,7 +184,6 @@ namespace Viewer
 
         private void btnInferAll_Click(object sender, EventArgs e)
         {
-            g.DrawImage(resized, new System.Drawing.Point(0, 0));
             sw.Stop();
 
             float[] arrIn = new float[IMG_SIZE * IMG_SIZE * CHANNEL];
@@ -197,7 +193,7 @@ namespace Viewer
                 {
                     for(int n = 0; n < CHANNEL; n++)
                     {
-                        arrIn[CHANNEL*(i * IMG_SIZE + j) + n] = (resized.GetPixel(i, j).R + resized.GetPixel(i, j).G + resized.GetPixel(i, j).B) / 3.0f;
+                        arrIn[CHANNEL*(i * IMG_SIZE + j) + n] = (resized.GetPixel(j, i).R + resized.GetPixel(j, i).G + resized.GetPixel(j, i).B) / 3.0f;
                         arrIn[CHANNEL * (i * IMG_SIZE + j) + n] /= 127.5f;
                         arrIn[CHANNEL * (i * IMG_SIZE + j) + n] -= 1.0f;
                     }
@@ -227,7 +223,6 @@ namespace Viewer
 
         private void btnInfer1_Click(object sender, EventArgs e)
         {
-            g.DrawImage(resized, new System.Drawing.Point(0, 0));
             sw.Stop();
 
             float[] arrIn = new float[IMG_SIZE * IMG_SIZE];
@@ -235,7 +230,7 @@ namespace Viewer
             {
                 for (int j = 0; j < IMG_SIZE; j++) // column
                 {
-                    arrIn[i * IMG_SIZE + j] = (resized.GetPixel(i, j).R + resized.GetPixel(i, j).G + resized.GetPixel(i, j).B) / 3.0f;
+                    arrIn[i * IMG_SIZE + j] = (resized.GetPixel(j, i).R + resized.GetPixel(j, i).G + resized.GetPixel(j, i).B) / 3.0f;
                     arrIn[i * IMG_SIZE + j] = arrIn[i * IMG_SIZE + j] / 127.5f - 1.0f;
                 }
             }
@@ -263,7 +258,6 @@ namespace Viewer
 
         private void btnInfer2_Click(object sender, EventArgs e)
         {
-            g.DrawImage(resized, new System.Drawing.Point(0, 0));
             sw.Stop();
 
             float[] arrIn = new float[IMG_SIZE * IMG_SIZE];
@@ -271,7 +265,7 @@ namespace Viewer
             {
                 for (int j = 0; j < IMG_SIZE; j++) // column
                 {
-                    arrIn[i * IMG_SIZE + j] = (resized.GetPixel(i, j).R + resized.GetPixel(i, j).G + resized.GetPixel(i, j).B) / 3.0f;
+                    arrIn[i * IMG_SIZE + j] = (resized.GetPixel(j, i).R + resized.GetPixel(j, i).G + resized.GetPixel(j, i).B) / 3.0f;
                     arrIn[i * IMG_SIZE + j] = arrIn[i * IMG_SIZE + j] / 127.5f - 1.0f;
                 }
             }
@@ -299,7 +293,6 @@ namespace Viewer
 
         private void btnInfer3_Click(object sender, EventArgs e)
         {
-            g.DrawImage(resized, new System.Drawing.Point(0, 0));
             sw.Stop();
 
             float[] arrIn = new float[IMG_SIZE * IMG_SIZE];
@@ -307,7 +300,7 @@ namespace Viewer
             {
                 for (int j = 0; j < IMG_SIZE; j++) // column
                 {
-                    arrIn[i * IMG_SIZE + j] = (resized.GetPixel(i, j).R + resized.GetPixel(i, j).G + resized.GetPixel(i, j).B) / 3.0f;
+                    arrIn[i * IMG_SIZE + j] = (resized.GetPixel(j, i).R + resized.GetPixel(j, i).G + resized.GetPixel(j, i).B) / 3.0f;
                     arrIn[i * IMG_SIZE + j] = arrIn[i * IMG_SIZE + j] / 127.5f - 1.0f;
                 }
             }
@@ -335,7 +328,6 @@ namespace Viewer
 
         private void btnInfer4_Click(object sender, EventArgs e)
         {
-            g.DrawImage(resized, new System.Drawing.Point(0, 0));
             sw.Stop();
 
             float[] arrIn = new float[IMG_SIZE * IMG_SIZE];
@@ -343,7 +335,7 @@ namespace Viewer
             {
                 for (int j = 0; j < IMG_SIZE; j++) // column
                 {
-                    arrIn[i * IMG_SIZE + j] = (resized.GetPixel(i, j).R + resized.GetPixel(i, j).G + resized.GetPixel(i, j).B) / 3.0f;
+                    arrIn[i * IMG_SIZE + j] = (resized.GetPixel(j, i).R + resized.GetPixel(j, i).G + resized.GetPixel(j, i).B) / 3.0f;
                     arrIn[i * IMG_SIZE + j] = arrIn[i * IMG_SIZE + j] / 127.5f - 1.0f;
                 }
             }
@@ -371,7 +363,6 @@ namespace Viewer
 
         private void btnInfer5_Click(object sender, EventArgs e)
         {
-            g.DrawImage(resized, new System.Drawing.Point(0, 0));
             sw.Stop();
 
             float[] arrIn = new float[IMG_SIZE * IMG_SIZE];
@@ -379,7 +370,7 @@ namespace Viewer
             {
                 for (int j = 0; j < IMG_SIZE; j++) // column
                 {
-                    arrIn[i * IMG_SIZE + j] = (resized.GetPixel(i, j).R + resized.GetPixel(i, j).G + resized.GetPixel(i, j).B) / 3.0f;
+                    arrIn[i * IMG_SIZE + j] = (resized.GetPixel(j, i).R + resized.GetPixel(j, i).G + resized.GetPixel(j, i).B) / 3.0f;
                     arrIn[i * IMG_SIZE + j] = arrIn[i * IMG_SIZE + j] / 127.5f - 1.0f;
                 }
             }
@@ -407,7 +398,6 @@ namespace Viewer
 
         private void btnInfer6_Click(object sender, EventArgs e)
         {
-            g.DrawImage(resized, new System.Drawing.Point(0, 0));
             sw.Stop();
 
             float[] arrIn = new float[IMG_SIZE * IMG_SIZE];
@@ -415,7 +405,7 @@ namespace Viewer
             {
                 for (int j = 0; j < IMG_SIZE; j++) // column
                 {
-                    arrIn[i * IMG_SIZE + j] = (resized.GetPixel(i, j).R + resized.GetPixel(i, j).G + resized.GetPixel(i, j).B) / 3.0f;
+                    arrIn[i * IMG_SIZE + j] = (resized.GetPixel(j, i).R + resized.GetPixel(j, i).G + resized.GetPixel(j, i).B) / 3.0f;
                     arrIn[i * IMG_SIZE + j] = arrIn[i * IMG_SIZE + j] / 127.5f - 1.0f;
                 }
             }
@@ -450,11 +440,11 @@ namespace Viewer
                 {
                     if(arrOut[i*IMG_SIZE + j] > 0.9)
                     {
-                        detected.SetPixel(i, j, color);
+                        detected.SetPixel(j, i, color);
                     }
                 }
             }
-            g.DrawImage(detected, new System.Drawing.Point(0, 0));
+            pictureBox1.Image = detected;
         }
 
         private void showInferenceAll(float[] arrOut)
@@ -465,38 +455,38 @@ namespace Viewer
                 for (int j = 0; j < IMG_SIZE; j++)
                 {
                     // class 1
-                    if (arrOut[CHANNEL * (i * IMG_SIZE + j) + 0] > 0.9)
+                    if (arrOut[CHANNEL * (i * IMG_SIZE + j) + 0] > 0.8)
                     {
-                        detected.SetPixel(i, j, Color.Red);
+                        detected.SetPixel(j, i, Color.Red);
                     }
                     // class 2
-                    if (arrOut[CHANNEL * (i * IMG_SIZE + j) + 1] > 0.1)
+                    if (arrOut[CHANNEL * (i * IMG_SIZE + j) + 1] > 0.9)
                     {
-                        detected.SetPixel(i, j, Color.Yellow);
+                        detected.SetPixel(j, i, Color.Yellow);
                     }
                     // class 3
-                    if (arrOut[CHANNEL * (i * IMG_SIZE + j) + 2] > 0.9)
+                    if (arrOut[CHANNEL * (i * IMG_SIZE + j) + 2] > 0.8)
                     {
-                        detected.SetPixel(i, j, Color.Blue);
+                        detected.SetPixel(j, i, Color.Blue);
                     }
                     // class 4
-                    if (arrOut[CHANNEL * (i * IMG_SIZE + j) + 3] > 0.9)
+                    if (arrOut[CHANNEL * (i * IMG_SIZE + j) + 3] > 0.8)
                     {
-                        detected.SetPixel(i, j, Color.Green);
+                        detected.SetPixel(j, i, Color.Green);
                     }
                     // class 5
-                    if (arrOut[CHANNEL * (i * IMG_SIZE + j) + 4] > 0.9)
+                    if (arrOut[CHANNEL * (i * IMG_SIZE + j) + 4] > 0.8)
                     {
-                        detected.SetPixel(i, j, Color.Pink);
+                        detected.SetPixel(j, i, Color.Pink);
                     }
                     // class 6
-                    if (arrOut[CHANNEL * (i * IMG_SIZE + j) + 5] > 0.9)
+                    if (arrOut[CHANNEL * (i * IMG_SIZE + j) + 5] > 0.7)
                     {
-                        detected.SetPixel(i, j, Color.Purple);
+                        detected.SetPixel(j, i, Color.Purple);
                     }
                 }
             }
-            g.DrawImage(detected, new System.Drawing.Point(0, 0));
+            pictureBox1.Image = detected;
         }
     }
 }

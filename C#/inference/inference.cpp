@@ -66,7 +66,14 @@ int initializeDll()
 
 int finalizeDll()
 {
-	TF_DeleteGraph(graph0);
+	if (graph0 != nullptr) TF_DeleteGraph(graph0);
+	if (graph1 != nullptr) TF_DeleteGraph(graph1);
+	if (graph2 != nullptr) TF_DeleteGraph(graph2);
+	if (graph3 != nullptr) TF_DeleteGraph(graph3);
+	if (graph4 != nullptr) TF_DeleteGraph(graph4);
+	if (graph5 != nullptr) TF_DeleteGraph(graph5);
+	if (graph100 != nullptr) TF_DeleteGraph(graph100);
+	
 	delete[] buffer;
 	delete[] bufferAll;
 	return 0;
