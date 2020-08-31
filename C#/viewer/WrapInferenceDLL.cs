@@ -16,45 +16,15 @@ namespace Viewer
         public static extern int finalizeDll();
 
         [DllImport("inference.dll")]
-        public static extern int loadModel_0();
+        public static extern int loadModel(string model_name, int model_num);
 
         [DllImport("inference.dll")]
-        public static extern int loadModel_1();
+        public static extern int prepareSession(int model_num, int channel);
+
+        [DllImport("inference.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int infer(System.IntPtr input, int model_num, int channel, out System.IntPtr result);
 
         [DllImport("inference.dll")]
-        public static extern int loadModel_2();
-
-        [DllImport("inference.dll")]
-        public static extern int loadModel_3();
-
-        [DllImport("inference.dll")]
-        public static extern int loadModel_4();
-
-        [DllImport("inference.dll")]
-        public static extern int loadModel_5();
-
-        [DllImport("inference.dll")]
-        public static extern int loadModel_100();
-
-        [DllImport("inference.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int infer_0(System.IntPtr input, out System.IntPtr result);
-
-        [DllImport("inference.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int infer_1(System.IntPtr input, out System.IntPtr result);
-
-        [DllImport("inference.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int infer_2(System.IntPtr input, out System.IntPtr result);
-
-        [DllImport("inference.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int infer_3(System.IntPtr input, out System.IntPtr result);
-
-        [DllImport("inference.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int infer_4(System.IntPtr input, out System.IntPtr result);
-
-        [DllImport("inference.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int infer_5(System.IntPtr input, out System.IntPtr result);
-
-        [DllImport("inference.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int infer_All(System.IntPtr input, out System.IntPtr result);
+        public static extern void releaseBuffer();
     }
 }

@@ -15,6 +15,7 @@ namespace Viewer
     {
         const int IMG_SIZE = 256;
         const int CHANNEL = 6;
+        bool imageRead;
         private Bitmap resized;
         System.Diagnostics.Stopwatch sw;
 
@@ -23,93 +24,18 @@ namespace Viewer
             InitializeComponent();
 
             int ret = WrapInferenceDLL.initializeDll();
+            imageRead = false;
             resized = new Bitmap(IMG_SIZE, IMG_SIZE); // width, height
-
             sw = new System.Diagnostics.Stopwatch();
-            sw.Start();
-            ret = WrapInferenceDLL.loadModel_0();
-            if (ret != 0)
-            {
-                // error
-                MessageBox.Show("cannot read model0");
-            }
-            sw.Stop();
-            TimeSpan ts = sw.Elapsed;
-            string msg = "frozen_graph_0.pb was loaded, time = " + ts.TotalMilliseconds + " ms";
-            listBox1.Items.Add(msg);
 
-            sw.Restart();
-            ret = WrapInferenceDLL.loadModel_1();
-            if (ret != 0)
-            {
-                // error
-                MessageBox.Show("cannot read model1");
-            }
-            sw.Stop();
-            ts = sw.Elapsed;
-            msg = "frozen_graph_1.pb was loaded, time = " + ts.TotalMilliseconds + " ms";
-            listBox1.Items.Add(msg);
-
-            sw.Restart();
-            ret = WrapInferenceDLL.loadModel_2();
-            if (ret != 0)
-            {
-                // error
-                MessageBox.Show("cannot read model2");
-            }
-            sw.Stop();
-            ts = sw.Elapsed;
-            msg = "frozen_graph_2.pb was loaded, time = " + ts.TotalMilliseconds + " ms";
-            listBox1.Items.Add(msg);
-
-            sw.Restart();
-            ret = WrapInferenceDLL.loadModel_3();
-            if (ret != 0)
-            {
-                // error
-                MessageBox.Show("cannot read model3");
-            }
-            sw.Stop();
-            ts = sw.Elapsed;
-            msg = "frozen_graph_3.pb was loaded, time = " + ts.TotalMilliseconds + " ms";
-            listBox1.Items.Add(msg);
-
-            sw.Restart();
-            ret = WrapInferenceDLL.loadModel_4();
-            if (ret != 0)
-            {
-                // error
-                MessageBox.Show("cannot read model4");
-            }
-            sw.Stop();
-            ts = sw.Elapsed;
-            msg = "frozen_graph_4.pb was loaded, time = " + ts.TotalMilliseconds + " ms";
-            listBox1.Items.Add(msg);
-
-            sw.Restart();
-            ret = WrapInferenceDLL.loadModel_5();
-            if (ret != 0)
-            {
-                // error
-                MessageBox.Show("cannot read model5");
-            }
-            sw.Stop();
-            ts = sw.Elapsed;
-            msg = "frozen_graph_5.pb was loaded, time = " + ts.TotalMilliseconds + " ms";
-            listBox1.Items.Add(msg);
-
-            sw.Restart();
-            ret = WrapInferenceDLL.loadModel_100();
-            if (ret != 0)
-            {
-                // error
-                MessageBox.Show("cannot read model100");
-            }
-            sw.Stop();
-            ts = sw.Elapsed;
-            msg = "frozen_graph_100.pb was loaded, time = " + ts.TotalMilliseconds + " ms";
-            listBox1.Items.Add(msg);
-
+            btnLoadModel.Enabled = true;
+            btnPrepClass1.Enabled = false;
+            btnPrepClass2.Enabled = false;
+            btnPrepClass3.Enabled = false;
+            btnPrepClass4.Enabled = false;
+            btnPrepClass5.Enabled = false;
+            btnPrepClass6.Enabled = false;
+            btnPrepareAll.Enabled = false;
             btnInfer1.Enabled = false;
             btnInfer2.Enabled = false;
             btnInfer3.Enabled = false;
@@ -173,17 +99,203 @@ namespace Viewer
 
             pictureBox1.Image = resized;
 
+            imageRead = true;
+        }
+
+        private void btnLoadModel_Click(object sender, EventArgs e)
+        {
+            string[] model_name = {"frozen_graph_0.pb",
+                                   "frozen_graph_1.pb",
+                                   "frozen_graph_2.pb",
+                                   "frozen_graph_3.pb",
+                                   "frozen_graph_4.pb",
+                                   "frozen_graph_5.pb",
+                                   "frozen_graph_100.pb"};
+            for(int i = 0; i < 7; i++)
+            {
+                sw.Restart();
+                int ret = WrapInferenceDLL.loadModel(model_name[i], i);
+                sw.Stop();
+                TimeSpan ts = sw.Elapsed;
+                string msg = model_name[i] + " was loaded, time = " + ts.TotalMilliseconds + " ms";
+                listBox1.Items.Add(msg);
+                listBox1.Refresh();
+                if (ret != 0)
+                {
+                    // error
+                    MessageBox.Show("cannot read model0");
+                    return;
+                }
+            }
+
+            btnLoadModel.Enabled = false;
+            btnPrepClass1.Enabled = true;
+            btnPrepClass2.Enabled = true;
+            btnPrepClass3.Enabled = true;
+            btnPrepClass4.Enabled = true;
+            btnPrepClass5.Enabled = true;
+            btnPrepClass6.Enabled = true;
+            btnPrepareAll.Enabled = true;
+            btnInfer1.Enabled = false;
+            btnInfer2.Enabled = false;
+            btnInfer3.Enabled = false;
+            btnInfer4.Enabled = false;
+            btnInfer5.Enabled = false;
+            btnInfer6.Enabled = false;
+            btnInferAll.Enabled = false;
+        }
+
+        private void btnPrepareOne_Click(object sender, EventArgs e)
+        {
+            sw.Restart();
+            int ret = WrapInferenceDLL.prepareSession(0, 1);
+            sw.Stop();
+            TimeSpan ts = sw.Elapsed;
+            string msg = "prepared session, time = " + ts.TotalMilliseconds + " ms";
+            listBox1.Items.Add(msg);
+            listBox1.Refresh();
+            if (ret != 0)
+            {
+                // error
+                MessageBox.Show("cannot prepare session");
+                return;
+            }
+            btnPrepClass1.Enabled = false;
             btnInfer1.Enabled = true;
+        }
+
+
+        private void btnPrepClass2_Click(object sender, EventArgs e)
+        {
+            sw.Restart();
+            int ret = WrapInferenceDLL.prepareSession(1, 1);
+            sw.Stop();
+            TimeSpan ts = sw.Elapsed;
+            string msg = "prepared session, time = " + ts.TotalMilliseconds + " ms";
+            listBox1.Items.Add(msg);
+            listBox1.Refresh();
+            if (ret != 0)
+            {
+                // error
+                MessageBox.Show("cannot prepare session");
+                return;
+            }
+
+            btnPrepClass2.Enabled = false;
             btnInfer2.Enabled = true;
+        }
+
+        private void btnPrepClass3_Click(object sender, EventArgs e)
+        {
+            sw.Restart();
+            int ret = WrapInferenceDLL.prepareSession(2, 1);
+            sw.Stop();
+            TimeSpan ts = sw.Elapsed;
+            string msg = "prepared session, time = " + ts.TotalMilliseconds + " ms";
+            listBox1.Items.Add(msg);
+            listBox1.Refresh();
+            if (ret != 0)
+            {
+                // error
+                MessageBox.Show("cannot prepare session");
+                return;
+            }
+
+            btnPrepClass3.Enabled = false;
             btnInfer3.Enabled = true;
+        }
+
+        private void btnPrepClass4_Click(object sender, EventArgs e)
+        {
+            sw.Restart();
+            int ret = WrapInferenceDLL.prepareSession(3, 1);
+            sw.Stop();
+            TimeSpan ts = sw.Elapsed;
+            string msg = "prepared session, time = " + ts.TotalMilliseconds + " ms";
+            listBox1.Items.Add(msg);
+            listBox1.Refresh();
+            if (ret != 0)
+            {
+                // error
+                MessageBox.Show("cannot prepare session");
+                return;
+            }
+
+            btnPrepClass4.Enabled = false;
             btnInfer4.Enabled = true;
+        }
+
+        private void btnPrepClass5_Click(object sender, EventArgs e)
+        {
+            sw.Restart();
+            int ret = WrapInferenceDLL.prepareSession(4, 1);
+            sw.Stop();
+            TimeSpan ts = sw.Elapsed;
+            string msg = "prepared session, time = " + ts.TotalMilliseconds + " ms";
+            listBox1.Items.Add(msg);
+            listBox1.Refresh();
+            if (ret != 0)
+            {
+                // error
+                MessageBox.Show("cannot prepare session");
+                return;
+            }
+
+            btnPrepClass5.Enabled = false;
             btnInfer5.Enabled = true;
+        }
+
+
+        private void btnPrepClass6_Click(object sender, EventArgs e)
+        {
+            sw.Restart();
+            int ret = WrapInferenceDLL.prepareSession(5, 1);
+            sw.Stop();
+            TimeSpan ts = sw.Elapsed;
+            string msg = "prepared session, time = " + ts.TotalMilliseconds + " ms";
+            listBox1.Items.Add(msg);
+            listBox1.Refresh();
+            if (ret != 0)
+            {
+                // error
+                MessageBox.Show("cannot prepare session");
+                return;
+            }
+
+            btnPrepClass6.Enabled = false;
             btnInfer6.Enabled = true;
+        }
+
+        private void btnPrepareAll_Click(object sender, EventArgs e)
+        {
+            sw.Restart();
+            int ret = WrapInferenceDLL.prepareSession(6, 6);
+            sw.Stop();
+            TimeSpan ts = sw.Elapsed;
+            string msg = "prepared session, time = " + ts.TotalMilliseconds + " ms";
+            listBox1.Items.Add(msg);
+            listBox1.Refresh();
+            if (ret != 0)
+            {
+                // error
+                MessageBox.Show("cannot prepare session");
+                return;
+            }
+
+            btnLoadModel.Enabled = false;
+            btnPrepareAll.Enabled = false;
+            btnPrepClass1.Enabled = false;
             btnInferAll.Enabled = true;
         }
 
         private void btnInferAll_Click(object sender, EventArgs e)
         {
+            if (!imageRead)
+            {
+                MessageBox.Show("No image was read");
+                return;
+            }
+
             sw.Stop();
 
             float[] arrIn = new float[IMG_SIZE * IMG_SIZE * CHANNEL];
@@ -204,18 +316,22 @@ namespace Viewer
 
             sw.Restart();
             IntPtr ptrOut;
-            int ret = WrapInferenceDLL.infer_All(ptrIn, out ptrOut);
-            if (ret != 0)
-            {
-                MessageBox.Show("cannot infer, code = " + ret);
-            }
-            float[] arrOut = new float[IMG_SIZE * IMG_SIZE * CHANNEL];
-            Marshal.Copy(ptrOut, arrOut, 0, IMG_SIZE * IMG_SIZE * CHANNEL);
+            int ret = WrapInferenceDLL.infer(ptrIn, 6, 6, out ptrOut);
             sw.Stop();
             TimeSpan ts = sw.Elapsed;
             string msg = "inferred using frozen_graph_100.pb, time = " + ts.TotalMilliseconds + " ms";
             listBox1.Items.Add(msg);
-
+            listBox1.Refresh();
+            if (ret != 0)
+            {
+                MessageBox.Show("cannot infer, code = " + ret);
+                WrapInferenceDLL.releaseBuffer();
+                Marshal.FreeCoTaskMem(ptrIn);
+                return;
+            }
+            float[] arrOut = new float[IMG_SIZE * IMG_SIZE * CHANNEL];
+            Marshal.Copy(ptrOut, arrOut, 0, IMG_SIZE * IMG_SIZE * CHANNEL);
+            WrapInferenceDLL.releaseBuffer();
             Marshal.FreeCoTaskMem(ptrIn);
 
             showInferenceAll(arrOut);
@@ -223,6 +339,12 @@ namespace Viewer
 
         private void btnInfer1_Click(object sender, EventArgs e)
         {
+            if(!imageRead)
+            {
+                MessageBox.Show("No image was read");
+                return;
+            }
+
             sw.Stop();
 
             float[] arrIn = new float[IMG_SIZE * IMG_SIZE];
@@ -239,18 +361,22 @@ namespace Viewer
 
             sw.Restart();
             IntPtr ptrOut;
-            int ret = WrapInferenceDLL.infer_0(ptrIn, out ptrOut);
-            if (ret != 0)
-            {
-                MessageBox.Show("cannot infer, code = " + ret);
-            }
-            float[] arrOut = new float[IMG_SIZE * IMG_SIZE];
-            Marshal.Copy(ptrOut, arrOut, 0, IMG_SIZE * IMG_SIZE);
+            int ret = WrapInferenceDLL.infer(ptrIn, 0, 1, out ptrOut);
             sw.Stop();
             TimeSpan ts = sw.Elapsed;
             string msg = "inferred using frozen_graph_0.pb, time = " + ts.TotalMilliseconds + " ms";
             listBox1.Items.Add(msg);
-
+            listBox1.Refresh();
+            if (ret != 0)
+            {
+                MessageBox.Show("cannot infer, code = " + ret);
+                WrapInferenceDLL.releaseBuffer();
+                Marshal.FreeCoTaskMem(ptrIn);
+                return;
+            }
+            float[] arrOut = new float[IMG_SIZE * IMG_SIZE];
+            Marshal.Copy(ptrOut, arrOut, 0, IMG_SIZE * IMG_SIZE);
+            WrapInferenceDLL.releaseBuffer();
             Marshal.FreeCoTaskMem(ptrIn);
 
             showInference(arrOut, Color.Red);
@@ -258,6 +384,12 @@ namespace Viewer
 
         private void btnInfer2_Click(object sender, EventArgs e)
         {
+            if (!imageRead)
+            {
+                MessageBox.Show("No image was read");
+                return;
+            }
+
             sw.Stop();
 
             float[] arrIn = new float[IMG_SIZE * IMG_SIZE];
@@ -274,7 +406,7 @@ namespace Viewer
 
             sw.Restart();
             IntPtr ptrOut;
-            int ret = WrapInferenceDLL.infer_1(ptrIn, out ptrOut);
+            int ret = WrapInferenceDLL.infer(ptrIn, 1, 1, out ptrOut);
             if (ret != 0)
             {
                 MessageBox.Show("cannot infer, code = " + ret);
@@ -293,6 +425,12 @@ namespace Viewer
 
         private void btnInfer3_Click(object sender, EventArgs e)
         {
+            if (!imageRead)
+            {
+                MessageBox.Show("No image was read");
+                return;
+            }
+
             sw.Stop();
 
             float[] arrIn = new float[IMG_SIZE * IMG_SIZE];
@@ -309,7 +447,7 @@ namespace Viewer
 
             sw.Restart();
             IntPtr ptrOut;
-            int ret = WrapInferenceDLL.infer_2(ptrIn, out ptrOut);
+            int ret = WrapInferenceDLL.infer(ptrIn, 2, 1, out ptrOut);
             if (ret != 0)
             {
                 MessageBox.Show("cannot infer, code = " + ret);
@@ -328,6 +466,12 @@ namespace Viewer
 
         private void btnInfer4_Click(object sender, EventArgs e)
         {
+            if (!imageRead)
+            {
+                MessageBox.Show("No image was read");
+                return;
+            }
+
             sw.Stop();
 
             float[] arrIn = new float[IMG_SIZE * IMG_SIZE];
@@ -344,7 +488,7 @@ namespace Viewer
 
             sw.Restart();
             IntPtr ptrOut;
-            int ret = WrapInferenceDLL.infer_3(ptrIn, out ptrOut);
+            int ret = WrapInferenceDLL.infer(ptrIn, 3, 1, out ptrOut);
             if (ret != 0)
             {
                 MessageBox.Show("cannot infer, code = " + ret);
@@ -363,6 +507,12 @@ namespace Viewer
 
         private void btnInfer5_Click(object sender, EventArgs e)
         {
+            if (!imageRead)
+            {
+                MessageBox.Show("No image was read");
+                return;
+            }
+
             sw.Stop();
 
             float[] arrIn = new float[IMG_SIZE * IMG_SIZE];
@@ -379,7 +529,7 @@ namespace Viewer
 
             sw.Restart();
             IntPtr ptrOut;
-            int ret = WrapInferenceDLL.infer_4(ptrIn, out ptrOut);
+            int ret = WrapInferenceDLL.infer(ptrIn, 4, 1, out ptrOut);
             if (ret != 0)
             {
                 MessageBox.Show("cannot infer, code = " + ret);
@@ -398,6 +548,12 @@ namespace Viewer
 
         private void btnInfer6_Click(object sender, EventArgs e)
         {
+            if (!imageRead)
+            {
+                MessageBox.Show("No image was read");
+                return;
+            }
+
             sw.Stop();
 
             float[] arrIn = new float[IMG_SIZE * IMG_SIZE];
@@ -414,7 +570,7 @@ namespace Viewer
 
             sw.Restart();
             IntPtr ptrOut;
-            int ret = WrapInferenceDLL.infer_5(ptrIn, out ptrOut);
+            int ret = WrapInferenceDLL.infer(ptrIn, 5, 1, out ptrOut);
             if (ret != 0)
             {
                 MessageBox.Show("cannot infer, code = " + ret);
